@@ -7,17 +7,13 @@ public class CubeBehaviour : MonoBehaviour {
 
 	//this references the gamecontroller script on the gamecontroller object
 	GameController aGameController;
-
-	//"this" means this script 
-	//"gameobject" means the object the script is attatched to 
+	
 	void OnMouseDown () {
 		aGameController.ProcessClickedCube(this.gameObject, x, y);
 	}
-
-
-
-
-
+	void GetKeyDown () {
+		aGameController.MoveAirplane ();
+	}
 
 	// Use this for initialization
 	void Start () {
