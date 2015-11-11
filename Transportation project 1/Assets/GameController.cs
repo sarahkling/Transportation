@@ -6,11 +6,15 @@ public class GameController : MonoBehaviour {
 	float timeToAct = 0f;
 	float turnLength = 1.5f;
 	public int score = 0;
+	public int targetX, targetY;
 	public Airplane airplane;
 	public GameObject cubePrefab;
+	private GameObject[,] allCubes;
 	int gridWidth = 16;
 	int gridHeight = 9;
-	private GameObject[,] allCubes;
+	int depotX = 15;
+	int depotY = 0;
+
 	 
 	public void ProcessClickedCube (GameObject clickedCube, int x, int y){
 		// If the player clicks an inactive airplane, it should highlight
@@ -24,12 +28,14 @@ public class GameController : MonoBehaviour {
 			clickedCube.GetComponent<Renderer> ().material.color = Color.red;
 		}
 		else if (airplane.active && (x != airplane.x || y != airplane.y)) {
-			allCubes[airplane.x, airplane.y].GetComponent<Renderer>().material.color = Color.white;
+			airplane.targetX = x;
+			airplane.targetY = y;
+		}
 			allCubes[x, y].GetComponent<Renderer>().material.color = Color.yellow;
 			airplane.x = x;
 			airplane.y = y;
-		}
 	}
+}
 	public void ProcessArrow () {
 		if (Input.GetKeyDown(KeyCode.UpArrow)) {
 			//move up in y direction
@@ -55,16 +61,12 @@ public class GameController : MonoBehaviour {
 		allCubes [airplane.x, airplane.y].GetComponent<Renderer>().material.color = Color.white;
 		airplane.Move ();
 		allCubes [airplane.x, airplane.y].GetComponent<Renderer>().material.color = Color.yellow;
-		}
+	}
 
-	/*If the player presses an arrow key while there is an active airplane, the airplane moves in that direction on the next turn. If the player touches many arrow keys between turns, only move one space total, in the most recently touched direction. The airplane is restricted to the grid.
-			There is a delivery depot in the lower right (black cube). If a vehicle reaches that location, it delivers all its cargo.
-				The player gets 1 point for each ton of cargo delivered.
-					Show the player’s current score somewhere on screen.*/
-	
 
 	// Use this for initialization
 	void Start () {
+
 
 		airplane = new Airplane ();
 		allCubes = new GameObject[gridWidth, gridHeight];
@@ -82,8 +84,8 @@ public class GameController : MonoBehaviour {
 	
 		airplane.x = 0;
 		airplane.y = 8;
-			allCubes[0,8].GetComponent<Renderer>().material.color = Color.red;
-			allCubes[15,0].GetComponent<Renderer>().material.color = Color.black;
+		allCubes[0,8].GetComponent<Renderer>().material.color = Color.red;
+		allCubes[depotX, depotY].GetComponent<Renderer>().material.color = Color.black;
 		timeToAct += turnLength;
 
 	}
@@ -111,7 +113,6 @@ public class GameController : MonoBehaviour {
 			print ("Airplane Cargo: " +airplane.cargo +" Score: " +score);
 		}
 		ProcessArrow();
-		allCubes[15,0].GetComponent<Renderer>().material.color = Color.black;
 	
 	}
 }
